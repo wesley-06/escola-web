@@ -1,17 +1,26 @@
 'use client';
-import React, { useState, createContext } from 'react';
+import React, { useState, createContext, useEffect, useRef } from 'react';
 import { LayoutState, ChildContainerProps, LayoutConfig, LayoutContextProps } from '@/types';
+import { DEFAULT_LAYOUT_CONFIG, saveLayoutConfigCookie } from './layoutConfigStorage';
 export const LayoutContext = createContext({} as LayoutContextProps);
 
-export const LayoutProvider = ({ children }: ChildContainerProps) => {
-    const [layoutConfig, setLayoutConfig] = useState<LayoutConfig>({
-        ripple: false,
-        inputStyle: 'outlined',
-        menuMode: 'static',
-        colorScheme: 'light',
-        theme: 'lara-light-teal',
-        scale: 14
-    });
+interface LayoutProviderProps extends ChildContainerProps {
+    /** Configuração inicial lida do cookie no servidor */
+    initialConfig?: LayoutConfig;
+}
+
+export const LayoutProvider = ({ children, initialConfig }: LayoutProviderProps) => {
+    const [layoutConfig, setLayoutConfig] = useState<LayoutConfig>(initialConfig ?? DEFAULT_LAYOUT_CONFIG);
+    const isFirstRender = useRef(true);
+
+    // Salva tema, esquema de cores e escala no cookie sempre que mudarem
+    useEffect(() => {
+        if (isFirstRender.current) {
+            isFirstRender.current = false;
+            return;
+        }
+        saveLayoutConfigCookie(layoutConfig);
+    }, [layoutConfig]);
 
     const [layoutState, setLayoutState] = useState<LayoutState>({
         staticMenuDesktopInactive: false,
