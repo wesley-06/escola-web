@@ -1,20 +1,37 @@
+import { api } from "@/lib/axios";
+import { alunoService } from "@/services/alunoService";
+import { alunoComRelacoes } from "@/types/escola";
 import { Column } from "primereact/column";
 import { DataTable } from "primereact/datatable";
+import { useEffect, useState } from "react";
+
+
 
 export default function Alunos() {
+    const [alunos, setAlunos] = useState<alunoComRelacoes[]>([])
 
-    const alunos = [
-        {matricula:'202601', nome:'Wesley Gomes', dataNasc:'2000-05-06',email:'wesley@email.com'},
-        {matricula:'202602', nome:'Wesley Gomes', dataNasc:'2000-05-06',email:'wesley@email.com'},
-        {matricula:'202603', nome:'Wesley Gomes', dataNasc:'2000-05-06',email:'wesley@email.com'},
-    ]
+    useEffect(() => {
+        async function buscarAlunos() {
+            const alunoApi = await alunoService.listar()
+            setAlunos(alunoApi)
+        }
 
-    return (
-        <DataTable emptyMessage="Nenhum aluno encontrado"
-        value={alunos}>
+        buscarAlunos()
+    }, [])
+}   
+                
+        
+
+return (
+        <DataTable
+            emptyMessage="Nenhum aluno encontrado"
+            value={alunos}>
             <Column header="Matricula" field="matricula"></Column>
             <Column header="Nome" field="nome"></Column>
-            <Column header="Data Nascimento" field="dataNasc"></Column>
+            <Column header="Data Nascimento" field="dataNasc"
+            body={(aluno) => new Date(aluno.nascimento)
+                    .toLocaleDateString('pt-BR', { timeZone: 'UTC' })}
+            ></Column>    
             <Column header="E-mail" field="email"></Column>
         </DataTable>
     )
