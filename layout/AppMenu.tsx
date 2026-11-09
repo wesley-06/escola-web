@@ -14,7 +14,7 @@ const AppMenu = () => {
                 { label: 'Cursos', icon: 'pi pi-fw pi-book', to: '/cursos' },
                 { label: 'Disciplinas', icon: 'pi pi-fw pi-list', to: '/disciplinas' },
                 { label: 'Professores', icon: 'pi pi-fw pi-id-card', to: '/professores' },
-                { label: 'Turmas', icon: 'pi pi-fw pi-users', to: '/turmas' },
+                { label: 'Turmas', icon: 'pi pi-fw pi-users', to: '/turmas' }
             ]
         }
     ];
